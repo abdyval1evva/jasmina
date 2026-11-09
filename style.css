@@ -1,0 +1,206 @@
+:root{
+  --wine:#4a0d10; --wine-d:#2e0709; --wine-l:#6b1417;
+  --cream:#f3e6c8; --parch:#d9b982; --ink:#151515; --coral:#d9824a;
+  --display:'Unbounded','Arial Black',Impact,sans-serif;
+  --text:'Manrope','Segoe UI',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#0b0b0b;font-family:var(--text)}
+.viewport{position:fixed;inset:0}
+.stage{
+  --from:inset(0 0 0 100%);
+  position:absolute;left:50%;top:50%;width:1280px;height:720px;
+  transform-origin:center;background:#000;overflow:hidden;
+  translate:-50% -50%;
+  scale:min(tan(atan2(100vw,1280px)),tan(atan2(100vh,720px)));
+}
+
+/* ---------- слайды и переходы ---------- */
+.slide{
+  position:absolute;inset:0;overflow:hidden;
+  visibility:hidden;opacity:0;clip-path:var(--from);
+}
+.slide.active{
+  visibility:visible;opacity:1;clip-path:inset(0);z-index:3;
+  transition:clip-path .9s cubic-bezier(.77,0,.18,1),opacity .4s;
+}
+.slide.leave{
+  visibility:visible;opacity:0;clip-path:inset(0);z-index:2;
+  transform:scale(.93);filter:blur(5px) brightness(.5);
+  transition:transform .9s ease,opacity .9s ease,filter .9s ease;
+}
+.wine{background:radial-gradient(ellipse at 72% 30%,var(--wine-l) 0,var(--wine) 45%,var(--wine-d) 100%)}
+.parch{
+  background:
+    radial-gradient(ellipse at 18% 12%,#ecd09a 0,transparent 45%),
+    radial-gradient(ellipse at 88% 88%,#b6874f 0,transparent 50%),
+    radial-gradient(ellipse at 75% 18%,#dfbb82 0,transparent 40%),
+    var(--parch);
+  box-shadow:inset 0 0 170px rgba(95,52,12,.6);
+  color:var(--ink);
+}
+.grain{
+  position:absolute;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.wine .grain{opacity:.5;mix-blend-mode:soft-light}
+
+/* ---------- анимации появления элементов ---------- */
+.a{opacity:0}
+.slide.active .a{animation:rise .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.55s + var(--d,0) * .15s)}
+.slide.active .a.l{animation-name:fromLeft}
+.slide.active .a.r{animation-name:fromRight}
+.slide.active .a.z{animation-name:zoomIn}
+.slide.leave .a{opacity:1;animation:none}
+@keyframes rise{from{opacity:0;transform:translateY(44px)}to{opacity:1;transform:none}}
+@keyframes fromLeft{from{opacity:0;transform:translateX(-80px)}to{opacity:1;transform:none}}
+@keyframes fromRight{from{opacity:0;transform:translateX(80px)}to{opacity:1;transform:none}}
+@keyframes zoomIn{from{opacity:0;transform:scale(.7) rotate(-3deg)}to{opacity:1;transform:none}}
+
+/* ---------- декор ---------- */
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(2px);animation:float 7s ease-in-out infinite}
+.o1{width:90px;height:90px;left:44%;top:12%;background:radial-gradient(circle at 35% 30%,#f3e6c8,#d9824a 60%,transparent 72%);opacity:.55}
+.o2{width:46px;height:46px;left:58%;top:78%;background:radial-gradient(circle at 35% 30%,#f3e6c8,#d9824a 60%,transparent 72%);opacity:.6;animation-delay:-2s}
+.o3{width:28px;height:28px;left:6%;top:88%;background:radial-gradient(circle,#f3e6c8,transparent 70%);opacity:.7;animation-delay:-4s}
+.o4{width:130px;height:130px;right:60px;top:40px;background:radial-gradient(circle at 35% 30%,#7a1d22,#4a0d10 62%,transparent 72%);opacity:.35}
+.o5{width:110px;height:110px;right:90px;top:60px;background:radial-gradient(circle at 35% 30%,#f3e6c8,#d9824a 60%,transparent 72%);opacity:.35;animation-delay:-3s}
+@keyframes float{0%,100%{transform:translateY(0) translateX(0)}50%{transform:translateY(-26px) translateX(12px)}}
+.scroll-deco{
+  position:absolute;right:26px;top:-20px;bottom:-20px;width:56px;opacity:.9;
+  background:linear-gradient(90deg,#c9a56c,#f3e6c8 40%,#e8d3a4 70%,#bf9a5e);
+  clip-path:polygon(10% 0,90% 0,100% 8%,86% 16%,100% 26%,84% 36%,100% 46%,86% 56%,100% 66%,84% 76%,100% 86%,88% 100%,10% 100%,0 90%,14% 80%,0 70%,16% 60%,0 50%,14% 40%,0 30%,16% 20%,0 10%);
+  animation:sway 6s ease-in-out infinite;transform-origin:top center;
+}
+@keyframes sway{0%,100%{transform:skewX(0) translateY(0)}50%{transform:skewX(3deg) translateY(14px)}}
+
+/* ---------- типографика ---------- */
+.title{
+  position:absolute;left:70px;top:48px;font-family:var(--display);font-weight:800;
+  font-size:50px;line-height:1.06;letter-spacing:-.5px;color:var(--ink);z-index:2;
+}
+.title.cream{color:var(--cream)}
+.small{font-size:20px;font-weight:600;color:var(--cream);opacity:.9}
+.lead{position:absolute;left:70px;top:150px;width:720px;font-size:20px;line-height:1.5;color:var(--cream);font-weight:600}
+.lead.dark-t{color:#2a0a0c}
+
+.box{border-radius:18px;padding:26px 30px;font-size:19px;line-height:1.55;font-weight:600}
+.box h3{font-family:var(--display);font-weight:800;font-size:22px;margin-bottom:14px;line-height:1.2}
+.dark{background:var(--ink);color:var(--cream)}
+.cream{background:var(--cream);color:#2a0a0c}
+.wine-b{background:var(--wine);color:var(--cream)}
+.box p+p{margin-top:12px}
+
+/* ---------- 1. титульный ---------- */
+.paper-blob{
+  position:absolute;right:0;top:0;width:620px;height:720px;
+  background:
+    radial-gradient(ellipse at 30% 20%,#efd7a6,transparent 55%),
+    radial-gradient(ellipse at 80% 90%,#b6874f,transparent 55%),var(--parch);
+  box-shadow:inset 0 0 90px rgba(95,52,12,.55);
+  clip-path:polygon(12% 0,100% 0,100% 100%,6% 100%,10% 91%,3% 80%,9% 68%,2% 55%,8% 42%,1% 30%,9% 18%,4% 8%);
+}
+.s1-art{position:absolute;right:80px;top:150px;width:440px;height:440px}
+.s1-art svg,.s3-art svg,.s7-art svg{width:100%;height:100%;overflow:visible}
+.ring{transform-box:fill-box;transform-origin:center;animation:spin 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+.s1-text{position:absolute;left:70px;top:150px;width:640px;z-index:2}
+.s1-text h1{font-family:var(--display);font-weight:300;font-size:44px;line-height:1.15;color:var(--cream);margin:14px 0 0}
+.s1-text h1 b{font-weight:800;font-size:74px;display:inline-block;margin-top:6px;letter-spacing:-1px}
+.author{margin-top:46px;display:inline-block;background:var(--ink);border-left:6px solid var(--coral);padding:16px 26px;border-radius:4px 14px 14px 4px}
+.author span{display:block;font-size:15px;color:var(--cream);opacity:.65;margin-bottom:4px}
+.author strong{font-family:var(--display);font-weight:500;font-size:19px;color:var(--cream)}
+
+/* ---------- 2. введение ---------- */
+.s2-box{position:absolute;left:70px;top:150px;width:800px;font-size:21px}
+.stats{position:absolute;left:70px;right:70px;bottom:70px;display:flex;gap:24px}
+.stat{flex:1;background:var(--wine);color:var(--cream);padding:26px 28px;border-radius:18px}
+.stat b{font-family:var(--display);font-weight:800;font-size:50px}
+.stat i{font-style:normal;font-family:var(--display);font-weight:500;font-size:22px}
+.stat span{display:block;margin-top:10px;font-size:16px;font-weight:600;opacity:.85;line-height:1.4}
+
+/* ---------- 3. строение ---------- */
+.s3-art{position:absolute;left:50px;top:200px;width:600px;height:470px}
+.legend{position:absolute;left:690px;top:170px;width:500px;list-style:none}
+.legend li{display:flex;gap:16px;align-items:center;background:var(--ink);color:var(--cream);padding:14px 20px;border-radius:14px;margin-bottom:12px;font-size:17px;font-weight:600;line-height:1.35}
+.legend i{flex:none;width:34px;height:34px;border-radius:50%;background:var(--cream);color:var(--wine);display:grid;place-items:center;font-style:normal;font-family:var(--display);font-weight:800;font-size:15px}
+.num circle{fill:var(--cream)}
+.num text{fill:var(--wine);font-family:var(--display);font-weight:800;font-size:15px;text-anchor:middle}
+
+/* ---------- 4. функции ---------- */
+.s4-grid{position:absolute;left:70px;right:70px;top:170px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.s4-grid .box{min-height:225px;font-size:20px}
+
+/* ---------- 5. фолликулы ---------- */
+.stages{position:absolute;left:70px;right:70px;top:270px;bottom:70px;display:flex;gap:16px}
+.stage-card{flex:1;background:rgba(0,0,0,.3);border:1px solid rgba(243,230,200,.3);border-radius:18px;padding:20px 16px;color:var(--cream);text-align:center}
+.stage-card h4{font-family:var(--display);font-weight:800;font-size:15px;margin:18px 0 10px}
+.stage-card p{font-size:15px;line-height:1.45;font-weight:600;opacity:.9}
+.stage-card.hot{background:var(--cream);color:var(--wine)}
+.fol{margin:0 auto;height:112px;display:flex;align-items:center;justify-content:center}
+.fol::before{content:'';display:block;border-radius:50%;border:3px solid #e3b9a0;
+  background:radial-gradient(circle,var(--coral) 0 11%,#faf1dc 12% 58%,var(--cream) 60%)}
+.f1::before{width:22px;height:22px}.f2::before{width:36px;height:36px}.f3::before{width:56px;height:56px}
+.f4::before{width:82px;height:82px}.f5::before{width:108px;height:108px;animation:pulse 2s ease-in-out infinite;box-shadow:0 0 0 0 rgba(217,130,74,.6);border-color:var(--wine)}
+
+/* ---------- 6. цикл ---------- */
+.timeline{position:absolute;left:70px;right:70px;top:250px;display:grid;grid-template-columns:1.4fr 1fr 1.4fr;gap:20px}
+.bar{height:26px;border-radius:14px;transform:scaleX(0);transform-origin:left}
+.slide.active .bar{animation:grow 1.1s cubic-bezier(.3,.8,.3,1) both;animation-delay:calc(.9s + var(--d,0) * .15s)}
+.slide.leave .bar{transform:none;animation:none}
+@keyframes grow{to{transform:scaleX(1)}}
+.p1 .bar{background:var(--wine)}
+.p2 .bar{background:var(--coral);box-shadow:0 0 24px rgba(217,130,74,.9)}
+.p3 .bar{background:var(--ink)}
+.phase h4{font-family:var(--display);font-weight:800;font-size:22px;margin:24px 0 6px}
+.phase span{display:inline-block;background:var(--ink);color:var(--cream);padding:5px 14px;border-radius:20px;font-size:15px;font-weight:800}
+.phase p{margin-top:16px;font-size:19px;line-height:1.5;font-weight:600}
+
+/* ---------- 7. овуляция ---------- */
+.s7-art{position:absolute;left:50px;top:150px;width:560px;height:520px}
+.steps{position:absolute;left:660px;top:150px;width:560px;list-style:none}
+.steps li{display:flex;gap:16px;align-items:center;background:var(--ink);color:var(--cream);padding:14px 20px;border-radius:14px;margin-bottom:14px;font-size:18px;font-weight:600;line-height:1.4}
+.steps b{flex:none;width:36px;height:36px;border-radius:50%;background:var(--coral);color:var(--ink);display:grid;place-items:center;font-family:var(--display);font-size:15px}
+.egg{animation:travel 7s ease-in-out infinite}
+@keyframes travel{0%,15%{transform:translate(0,0);opacity:1}45%{transform:translate(98px,-158px)}75%{transform:translate(190px,-98px)}92%{transform:translate(196px,-14px);opacity:1}100%{transform:translate(196px,-14px);opacity:0}}
+.ring2{transform-box:fill-box;transform-origin:center;animation:burst 3.5s ease-out infinite}
+@keyframes burst{0%{transform:scale(1);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+
+/* ---------- 8. гормоны ---------- */
+.chain{position:absolute;left:70px;right:70px;top:230px;display:flex;align-items:center;justify-content:space-between}
+.node{width:340px;height:160px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:26px;text-align:center}
+.node small{font-family:var(--text);font-weight:600;font-size:17px;margin-top:10px;opacity:.85}
+.arrow{font-size:46px;color:var(--wine)}
+.slide.active .arrow{animation:rise .9s both,nudge 1.4s ease-in-out infinite 1.8s;animation-delay:calc(.55s + var(--d,0) * .15s),0s}
+@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(12px)}}
+.s8-note{position:absolute;left:70px;right:70px;bottom:60px;font-size:20px}
+.s8-note b{color:var(--coral)}
+
+/* ---------- 9. признаки и нарушения ---------- */
+.two{position:absolute;left:70px;right:110px;top:200px;display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.two ul{list-style:none}
+.two li{position:relative;padding-left:26px;margin-bottom:12px;font-size:18px}
+.two li::before{content:'';position:absolute;left:0;top:8px;width:11px;height:11px;border-radius:50%;background:var(--coral)}
+.warn{margin-top:14px;font-size:16px;color:var(--coral);font-weight:800}
+
+/* ---------- 10. вывод ---------- */
+.conclusion{position:absolute;left:70px;right:70px;top:210px;background:var(--wine);color:var(--cream);border-radius:26px;padding:56px 60px;font-size:29px;line-height:1.5;font-weight:600;box-shadow:0 30px 60px rgba(46,7,9,.5)}
+
+/* ---------- 11. спасибо ---------- */
+.thanks{position:absolute;left:70px;top:230px;font-family:var(--display);font-weight:800;font-size:64px;line-height:1.1;color:var(--cream);z-index:2}
+.slide:last-of-type .small{position:absolute;left:72px;top:470px;font-size:22px}
+.s1-art.end{right:80px;top:160px;width:420px;height:420px}
+
+/* ---------- навигация ---------- */
+.progress{position:fixed;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.1);z-index:20}
+.progress i{display:block;height:100%;width:0;background:var(--coral);transition:width .7s cubic-bezier(.3,.8,.3,1)}
+.nav{position:fixed;bottom:18px;width:46px;height:46px;border-radius:50%;border:0;background:var(--cream);color:var(--wine);font-size:22px;cursor:pointer;z-index:20;opacity:.85;transition:transform .2s,opacity .2s}
+.nav:hover{transform:scale(1.12);opacity:1}
+.nav:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+.prev{left:18px}.next{right:18px}
+.counter{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);font-family:var(--display);font-size:13px;color:var(--cream);opacity:.75;z-index:20}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}
+}
